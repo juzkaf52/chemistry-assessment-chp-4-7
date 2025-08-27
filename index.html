@@ -1,0 +1,3468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chemistry Mastery Assessment</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧪</text></svg>">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --success-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --warning-gradient: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+            --glass-bg: rgba(255, 255, 255, 0.25);
+            --glass-border: rgba(255, 255, 255, 0.18);
+            --text-primary: #2d3748;
+            --text-light: #ffffff;
+            --shadow-soft: 0 8px 32px rgba(31, 38, 135, 0.37);
+            --shadow-strong: 0 15px 35px rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--primary-gradient);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Animated Background */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .floating-orb {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.1;
+            animation: float 20s infinite ease-in-out;
+        }
+
+        .orb-1 { width: 200px; height: 200px; background: var(--secondary-gradient); top: 10%; left: 10%; animation-delay: 0s; }
+        .orb-2 { width: 150px; height: 150px; background: var(--success-gradient); top: 60%; right: 10%; animation-delay: -5s; }
+        .orb-3 { width: 100px; height: 100px; background: var(--warning-gradient); bottom: 20%; left: 20%; animation-delay: -10s; }
+        .orb-4 { width: 120px; height: 120px; background: var(--secondary-gradient); top: 30%; right: 30%; animation-delay: -15s; }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            33% { transform: translateY(-30px) rotate(120deg); }
+            66% { transform: translateY(15px) rotate(240deg); }
+        }
+
+        /* Glass Morphism Components */
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 20px;
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--shadow-soft);
+        }
+
+        .screen {
+            display: none;
+            min-height: 100vh;
+            padding: 2rem;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .screen.active {
+            display: flex;
+        }
+
+        /* Start Screen */
+        .start-container {
+            text-align: center;
+            max-width: 500px;
+            width: 100%;
+        }
+
+        .logo {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+
+        .main-title {
+            font-size: 3rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #ffffff 0%, #f0f8ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 0 30px rgba(255, 255, 255, 0.5);
+        }
+
+        .subtitle {
+            color: var(--text-light);
+            font-size: 1.2rem;
+            font-weight: 300;
+            margin-bottom: 3rem;
+            opacity: 0.9;
+        }
+
+        /* Question Map Modal */
+        .question-map-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .question-map-overlay.active {
+            display: flex;
+        }
+
+        .question-map-container {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--shadow-soft);
+            max-width: 900px;
+            width: 100%;
+            max-height: 80vh;
+            overflow-y: auto;
+            padding: 2rem;
+            animation: mapSlideIn 0.5s ease-out;
+        }
+
+        @keyframes mapSlideIn {
+            from { opacity: 0; transform: scale(0.9) translateY(-50px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        .map-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .map-title {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .map-close {
+            background: var(--secondary-gradient);
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .map-close:hover {
+            transform: scale(1.1);
+            box-shadow: 0 5px 15px rgba(240, 147, 251, 0.4);
+        }
+
+        .map-legend {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .legend-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .legend-answered { background: #10b981; }
+        .legend-current { background: #3b82f6; }
+        .legend-flagged { background: #f59e0b; }
+        .legend-unanswered { background: #6b7280; }
+
+        .sections-grid {
+            display: grid;
+            gap: 2rem;
+        }
+
+        .section-container {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            padding: 1.5rem;
+            transition: transform 0.3s ease;
+        }
+
+        .section-container:hover {
+            transform: translateY(-2px);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .section-progress {
+            font-size: 0.9rem;
+            color: #6b7280;
+            font-weight: 600;
+        }
+
+        .questions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
+            gap: 0.75rem;
+        }
+
+        .question-dot {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            position: relative;
+        }
+
+        .question-dot:hover {
+            transform: scale(1.1);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .question-dot.answered {
+            background: #10b981;
+            color: white;
+        }
+
+        .question-dot.current {
+            background: #3b82f6;
+            color: white;
+            border-color: #1d4ed8;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+        }
+
+        .question-dot.flagged {
+            background: #f59e0b;
+            color: white;
+        }
+
+        .question-dot.flagged::after {
+            content: '🚩';
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            font-size: 0.7rem;
+        }
+
+        .question-dot.unanswered {
+            background: #e5e7eb;
+            color: #6b7280;
+        }
+
+        .btn-map {
+            background: var(--glass-bg);
+            color: var(--text-light);
+            backdrop-filter: blur(10px);
+        }
+
+        .form-container {
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .input-group {
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+
+        .input-label {
+            display: block;
+            color: var(--text-primary);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 1rem 1.5rem;
+            border: none;
+            border-radius: 15px;
+            background: rgba(255, 255, 255, 0.9);
+            font-size: 1rem;
+            font-family: inherit;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .input-field:focus {
+            outline: none;
+            background: white;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn {
+            background: var(--secondary-gradient);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 15px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(240, 147, 251, 0.4);
+        }
+
+        .btn-primary {
+            background: var(--primary-gradient);
+            width: 100%;
+            padding: 1.2rem;
+            font-size: 1.1rem;
+        }
+
+        .btn-secondary {
+            background: var(--glass-bg);
+            color: var(--text-primary);
+            backdrop-filter: blur(10px);
+        }
+
+        /* Exam Screen */
+        .exam-container {
+            width: 100%;
+            max-width: 1200px;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .exam-header {
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .exam-logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--text-light);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .progress-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex: 1;
+            max-width: 400px;
+            margin: 0 2rem;
+        }
+
+        .progress-bar {
+            flex: 1;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--success-gradient);
+            width: 0%;
+            transition: width 0.5s ease;
+            border-radius: 10px;
+        }
+
+        .progress-text {
+            color: var(--text-light);
+            font-weight: 700;
+            min-width: 50px;
+        }
+
+        .exam-stats {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+        }
+
+        .stat-badge {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .timer-badge {
+            background: var(--warning-gradient);
+            color: white;
+        }
+
+        .question-badge {
+            background: var(--glass-bg);
+            color: var(--text-light);
+            backdrop-filter: blur(10px);
+        }
+
+        .question-container {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 0 2rem;
+        }
+
+        .question-card {
+            width: 100%;
+            max-width: 800px;
+            padding: 3rem;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .question-type-badge {
+            background: var(--secondary-gradient);
+            color: white;
+            padding: 0.5rem 1.5rem;
+            border-radius: 25px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .question-number {
+            background: var(--success-gradient);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 15px;
+            font-weight: 600;
+        }
+
+        .question-text {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 2.5rem;
+            line-height: 1.6;
+        }
+
+        .options-grid {
+            display: grid;
+            gap: 1rem;
+            margin-bottom: 3rem;
+        }
+
+        .option-card {
+            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.9);
+            border: 2px solid transparent;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .option-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .option-card:hover::before {
+            left: 100%;
+        }
+
+        .option-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.2);
+            border-color: rgba(102, 126, 234, 0.3);
+        }
+
+        .option-card.selected {
+            background: var(--success-gradient);
+            color: white;
+            border-color: transparent;
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(79, 172, 254, 0.4);
+        }
+
+        /* Fill in the Blank Drag & Drop Styles */
+        .fill-blank-container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .fill-blank-question {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 2rem;
+            line-height: 1.8;
+            text-align: center;
+        }
+
+        .drop-zone {
+            display: inline-block;
+            min-width: 120px;
+            min-height: 40px;
+            padding: 8px 16px;
+            margin: 0 8px;
+            border: 3px dashed #cbd5e0;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.8);
+            vertical-align: middle;
+            transition: all 0.3s ease;
+            position: relative;
+            text-align: center;
+            font-weight: 600;
+            color: #718096;
+        }
+
+        .drop-zone.drag-over {
+            border-color: #667eea;
+            background: rgba(102, 126, 234, 0.1);
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .drop-zone.filled {
+            border-color: #10b981;
+            background: var(--success-gradient);
+            color: white;
+            border-style: solid;
+            box-shadow: 0 5px 15px rgba(16, 185, 129, 0.3);
+        }
+
+        .drop-zone.filled:hover {
+            transform: scale(1.02);
+            cursor: pointer;
+        }
+
+        .options-bank {
+            background: rgba(248, 250, 252, 0.9);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+            border: 2px solid #e2e8f0;
+        }
+
+        .bank-header {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .draggable-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .draggable-option {
+            padding: 0.8rem 1.5rem;
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 25px;
+            cursor: grab;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            color: var(--text-primary);
+            user-select: none;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        .draggable-option::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .draggable-option:hover::before {
+            left: 100%;
+        }
+
+        .draggable-option:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.2);
+            border-color: rgba(102, 126, 234, 0.3);
+        }
+
+        .draggable-option:active {
+            cursor: grabbing;
+            transform: scale(1.05);
+        }
+
+        .draggable-option.dragging {
+            opacity: 0.7;
+            transform: rotate(5deg) scale(1.1);
+            z-index: 1000;
+            box-shadow: 0 15px 35px rgba(102, 126, 234, 0.4);
+        }
+
+        .draggable-option.used {
+            opacity: 0.4;
+            background: #f7fafc;
+            color: #a0aec0;
+            cursor: not-allowed;
+            transform: none;
+            pointer-events: none;
+        }
+
+        .fill-blank-progress {
+            text-align: center;
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 12px;
+            font-weight: 600;
+            color: var(--text-primary);
+            border: 2px solid #e2e8f0;
+        }
+
+        .fill-blank-progress.complete {
+            background: var(--success-gradient);
+            color: white;
+            border-color: #10b981;
+        }
+
+        /* Matching Activity Styles */
+        .matching-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .matching-column {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .column-header {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+            text-align: center;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .matching-item {
+            padding: 1rem 1.5rem;
+            margin-bottom: 0.75rem;
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .matching-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .matching-item:hover::before {
+            left: 100%;
+        }
+
+        .matching-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.2);
+            border-color: rgba(102, 126, 234, 0.3);
+        }
+
+        .matching-item.selected {
+            background: var(--primary-gradient);
+            color: white;
+            border-color: transparent;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .matching-item.matched {
+            background: var(--success-gradient);
+            color: white;
+            border-color: transparent;
+            cursor: default;
+            transform: none;
+        }
+
+        .matching-item.matched:hover {
+            transform: none;
+        }
+
+        .matching-progress {
+            text-align: center;
+            margin-top: 1rem;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 12px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .matching-progress.complete {
+            background: var(--success-gradient);
+            color: white;
+        }
+
+        .navigation-bar {
+            padding: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-group {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn-nav {
+            padding: 0.8rem 1.5rem;
+            border-radius: 12px;
+            font-size: 0.9rem;
+        }
+
+        .btn-flag {
+            background: var(--warning-gradient);
+        }
+
+        .btn-flag.flagged {
+            background: #e74c3c;
+        }
+
+        /* Results Screen */
+        .results-container {
+            text-align: center;
+            max-width: 700px;
+            width: 100%;
+        }
+
+        .results-card {
+            padding: 3rem;
+            animation: zoomIn 0.8s ease-out;
+        }
+
+        @keyframes zoomIn {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .results-title {
+            font-size: 2.5rem;
+            font-weight: 900;
+            background: var(--success-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+        }
+
+        .score-display {
+            font-size: 4rem;
+            font-weight: 900;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin: 2rem 0;
+            text-shadow: 0 0 30px rgba(102, 126, 234, 0.3);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1.5rem;
+            margin: 2.5rem 0;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 1.5rem;
+            border-radius: 15px;
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .results-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
+        /* Confetti Animation */
+        .confetti {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        .confetti-piece {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            animation: confetti-fall 3s linear infinite;
+        }
+
+        @keyframes confetti-fall {
+            0% { transform: translateY(-100vh) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .main-title { font-size: 2.2rem; }
+            .subtitle { font-size: 1rem; }
+            .form-container { padding: 2rem; }
+            .exam-header { flex-direction: column; gap: 1rem; padding: 1rem; }
+            .progress-section { max-width: 100%; margin: 1rem 0; }
+            .exam-stats { justify-content: center; flex-wrap: wrap; }
+            .question-card { padding: 2rem; }
+            .question-text { font-size: 1.3rem; }
+            .navigation-bar { flex-direction: column; gap: 1rem; }
+            .nav-group { justify-content: center; flex-wrap: wrap; }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+            .results-actions { flex-direction: column; align-items: center; }
+            
+            /* Mobile matching styles */
+            .matching-container {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .matching-column {
+                padding: 1rem;
+            }
+            
+            .column-header {
+                font-size: 1rem;
+            }
+            
+            .matching-item {
+                padding: 0.8rem 1rem;
+                font-size: 0.9rem;
+            }
+            
+            /* Mobile fill-blank styles */
+            .fill-blank-container {
+                padding: 1.5rem;
+            }
+            
+            .fill-blank-question {
+                font-size: 1.2rem;
+                margin-bottom: 1.5rem;
+            }
+            
+            .drop-zone {
+                min-width: 100px;
+                min-height: 35px;
+                padding: 6px 12px;
+                margin: 0 4px;
+                font-size: 0.9rem;
+            }
+            
+            .draggable-option {
+                padding: 0.6rem 1.2rem;
+                font-size: 0.9rem;
+                margin-bottom: 0.5rem;
+            }
+            
+            .options-bank {
+                padding: 1rem;
+            }
+            
+            .bank-header {
+                font-size: 1rem;
+            }
+            
+            .question-map-container {
+                margin: 1rem;
+                padding: 1.5rem;
+            }
+            
+            .questions-grid {
+                grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
+                gap: 0.5rem;
+            }
+            
+            .question-dot {
+                width: 40px;
+                height: 40px;
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="bg-animation">
+        <div class="floating-orb orb-1"></div>
+        <div class="floating-orb orb-2"></div>
+        <div class="floating-orb orb-3"></div>
+        <div class="floating-orb orb-4"></div>
+    </div>
+
+    <!-- Start Screen -->
+    <div class="screen active" id="startScreen">
+        <div class="start-container">
+            <div class="logo">🧪</div>
+            <h1 class="main-title">Chemistry Assessment</h1>
+            <p class="subtitle">Fill in Blanks • True/False • Matching • MCQ Reasoning • 40 Questions</p>
+            
+            <div class="glass-card form-container">
+                <div class="input-group">
+                    <label class="input-label">✨ Student Name</label>
+                    <input type="text" class="input-field" id="studentName" placeholder="Enter your full name" required>
+                </div>
+                
+                <div class="input-group">
+                    <label class="input-label">🎓 Class/Roll Number</label>
+                    <input type="text" class="input-field" id="studentClass" placeholder="Optional - Class & Roll">
+                </div>
+                
+                <button class="btn btn-primary" onclick="startExam()">
+                    🚀 Begin Assessment
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Exam Screen -->
+    <div class="screen" id="examScreen">
+        <div class="exam-container">
+            <div class="exam-header glass-card">
+                <div class="exam-logo">
+                    🧪 Chemistry Test
+                </div>
+                
+                <div class="progress-section">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                    <span class="progress-text" id="progressText">0%</span>
+                </div>
+                
+                <div class="exam-stats">
+                    <div class="stat-badge timer-badge">
+                        ⏱️ <span id="timer">35:00</span>
+                    </div>
+                    <div class="stat-badge question-badge">
+                        📝 <span id="questionCounter">Q 1/40</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question-container">
+                <div class="glass-card question-card">
+                    <div class="question-header">
+                        <span class="question-type-badge" id="questionType">Fill in the Blank</span>
+                        <span class="question-number" id="questionNumber">Question 1 of 40</span>
+                    </div>
+                    
+                    <div class="question-text" id="questionText">
+                        Loading question...
+                    </div>
+                    
+                    <div class="options-grid" id="optionsContainer">
+                        <!-- Options will be inserted here -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="navigation-bar">
+                <div class="nav-group">
+                    <button class="btn btn-secondary btn-nav" onclick="previousQuestion()" id="prevBtn">
+                        ← Previous
+                    </button>
+                </div>
+                
+                <div class="nav-group">
+                    <button class="btn btn-map btn-nav" onclick="openQuestionMap()">
+                        🗺️ Map
+                    </button>
+                    <button class="btn btn-flag btn-nav" onclick="flagQuestion()" id="flagBtn">
+                        🚩 Flag
+                    </button>
+                    <button class="btn btn-primary btn-nav" onclick="nextQuestion()" id="nextBtn">
+                        Next →
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Results Screen -->
+    <div class="screen" id="resultsScreen">
+        <div class="results-container">
+            <div class="glass-card results-card">
+                <h2 class="results-title">🎉 Assessment Complete!</h2>
+                <div class="score-display" id="finalScore">85%</div>
+                
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value" id="correctCount">17</div>
+                        <div class="stat-label">Correct Answers</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="wrongCount">3</div>
+                        <div class="stat-label">Wrong Answers</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="totalMarks">34/60</div>
+                        <div class="stat-label">Total Marks</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="timeTaken">12:45</div>
+                        <div class="stat-label">Time Taken</div>
+                    </div>
+                </div>
+
+                <div class="results-actions">
+                    <button class="btn btn-secondary" onclick="restartExam()">
+                        🔄 Retry Assessment
+                    </button>
+                    <button class="btn btn-primary" onclick="showDetailedResults()">
+                        📄 View Detailed Report
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Detailed Results Modal -->
+    <div class="question-map-overlay" id="detailedResultsOverlay">
+        <div class="question-map-container" style="max-width: 1000px;">
+            <div class="map-header">
+                <h3 class="map-title">📊 Detailed Assessment Report</h3>
+                <button class="map-close" onclick="closeDetailedResults()">×</button>
+            </div>
+            
+            <div id="detailedReportContent" style="max-height: 60vh; overflow-y: auto; padding: 1rem; background: rgba(255,255,255,0.9); border-radius: 15px; margin-bottom: 1rem;">
+                <!-- Detailed report will be generated here -->
+            </div>
+            
+            <div style="text-align: center; padding: 1rem;">
+                <button class="btn btn-secondary" onclick="copyReportToClipboard()" style="margin-right: 1rem;">
+                    📋 Copy Report
+                </button>
+                <button class="btn btn-primary" onclick="downloadReportAsPDF()" style="margin-right: 1rem;">
+                    📄 Download PDF
+                </button>
+                <button class="btn btn-secondary" onclick="closeDetailedResults()">
+                    ✅ Close
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Question Map Modal -->
+    <div class="question-map-overlay" id="questionMapOverlay">
+        <div class="question-map-container">
+            <div class="map-header">
+                <h3 class="map-title">🗺️ Question Map</h3>
+                <button class="map-close" onclick="closeQuestionMap()">×</button>
+            </div>
+            
+            <div class="map-legend">
+                <div class="legend-item">
+                    <div class="legend-dot legend-answered"></div>
+                    <span>Answered</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-dot legend-current"></div>
+                    <span>Current</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-dot legend-flagged"></div>
+                    <span>Flagged</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-dot legend-unanswered"></div>
+                    <span>Unanswered</span>
+                </div>
+            </div>
+            
+            <div class="sections-grid" id="sectionsGrid">
+                <!-- Sections will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Chemistry Questions Database - 40 Questions Total
+        const questions = [
+            // Section A: Fill in the Blanks (10 questions)
+            {
+                type: "fill-blank",
+                question: "The tendency of atoms to achieve 8 electrons in their outer shell is called the ________.",
+                options: ["Octet rule", "Duplet rule", "Triple bond rule", "Metallic rule"],
+                correct: 0,
+                section: "A"
+            },
+            {
+                type: "fill-blank",
+                question: "Ionic bonds are formed due to ________ of electrons.",
+                options: ["Sharing", "Transfer", "Attraction", "Loss of neutrons"],
+                correct: 1,
+                section: "A"
+            },
+            {
+                type: "fill-blank",
+                question: "In a hydrogen molecule, atoms are held together by ________ bonding.",
+                options: ["Ionic", "Covalent", "Metallic", "Hydrogen"],
+                correct: 1,
+                section: "A"
+            },
+            {
+                type: "fill-blank",
+                question: "Metallic bonds consist of positive ions in a \"sea of ________.\"",
+                options: ["Protons", "Mobile electrons", "Neutrons", "Shared bonds"],
+                correct: 1,
+                section: "A"
+            },
+            {
+                type: "fill-blank",
+                question: "Water molecules are held together by ________ bonds.",
+                options: ["Covalent", "Hydrogen", "Ionic", "Metallic"],
+                correct: 1,
+                section: "A"
+            },
+            {
+                type: "fill-blank",
+                question: "Graphite conducts electricity because of ________ electrons.",
+                options: ["Free", "Bound", "Proton", "Neutron"],
+                correct: 0,
+                section: "A"
+            },
+            {
+                type: "fill-blank",
+                question: "Elements in the same group of the Periodic Table have similar ________.",
+                options: ["Atomic mass", "Proton number", "Number of shells", "Chemical properties"],
+                correct: 3,
+                section: "A"
+            },
+            {
+                type: "fill-blank",
+                question: "Alkali metals are stored in ________ to prevent reaction with air/water.",
+                options: ["Oil", "Alcohol", "Mercury", "Water"],
+                correct: 0,
+                section: "A"
+            },
+            {
+                type: "fill-blank",
+                question: "The formula for calculating the number of moles is mass divided by ________.",
+                options: ["Atomic number", "Molar mass", "Density", "Volume"],
+                correct: 1,
+                section: "A"
+            },
+            {
+                type: "fill-blank",
+                question: "Acids turn blue litmus paper ________.",
+                options: ["Red", "Green", "Yellow", "Purple"],
+                correct: 0,
+                section: "A"
+            },
+
+            // Section B: True or False (10 questions)
+            {
+                type: "true-false",
+                question: "Sodium chloride conducts electricity in solid state.",
+                options: ["True", "False"],
+                correct: 1,
+                section: "B"
+            },
+            {
+                type: "true-false",
+                question: "Covalent bonding involves sharing of electrons.",
+                options: ["True", "False"],
+                correct: 0,
+                section: "B"
+            },
+            {
+                type: "true-false",
+                question: "Noble gases are stable because their outermost shells are complete.",
+                options: ["True", "False"],
+                correct: 0,
+                section: "B"
+            },
+            {
+                type: "true-false",
+                question: "Water is called a universal solvent because of hydrogen bonding.",
+                options: ["True", "False"],
+                correct: 0,
+                section: "B"
+            },
+            {
+                type: "true-false",
+                question: "Metallic bonds make metals brittle.",
+                options: ["True", "False"],
+                correct: 1,
+                section: "B"
+            },
+            {
+                type: "true-false",
+                question: "Halogens exist as diatomic molecules at room temperature.",
+                options: ["True", "False"],
+                correct: 0,
+                section: "B"
+            },
+            {
+                type: "true-false",
+                question: "Diamond and graphite are both forms of carbon.",
+                options: ["True", "False"],
+                correct: 0,
+                section: "B"
+            },
+            {
+                type: "true-false",
+                question: "Caesium is more reactive than sodium.",
+                options: ["True", "False"],
+                correct: 0,
+                section: "B"
+            },
+            {
+                type: "true-false",
+                question: "Ice floats on water because it is less dense than liquid water.",
+                options: ["True", "False"],
+                correct: 0,
+                section: "B"
+            },
+            {
+                type: "true-false",
+                question: "All acids contain hydrogen atoms.",
+                options: ["True", "False"],
+                correct: 0,
+                section: "B"
+            },
+
+            // Section C: Match the Following (3 matching sets = 15 questions)
+            {
+                type: "matching",
+                question: "Match the following types of bonding with their descriptions:",
+                section: "C",
+                matchingSet: 1,
+                leftItems: ["Ionic bond", "Covalent bond", "Metallic bond", "Hydrogen bond", "Van der Waals forces"],
+                rightItems: ["Transfer of electrons", "Sharing of electrons", "Sea of electrons", "Between water molecules", "Weak intermolecular forces"],
+                correctMatches: {
+                    "Ionic bond": "Transfer of electrons",
+                    "Covalent bond": "Sharing of electrons", 
+                    "Metallic bond": "Sea of electrons",
+                    "Hydrogen bond": "Between water molecules",
+                    "Van der Waals forces": "Weak intermolecular forces"
+                }
+            },
+            {
+                type: "matching",
+                question: "Match the following elements/compounds with their uses:",
+                section: "C",
+                matchingSet: 2,
+                leftItems: ["Diamond", "Graphite", "Sodium", "Chlorine", "Iodine"],
+                rightItems: ["Cutting tools", "Pencil lead, conductor", "Street lamps", "Water disinfectant", "Antiseptic"],
+                correctMatches: {
+                    "Diamond": "Cutting tools",
+                    "Graphite": "Pencil lead, conductor",
+                    "Sodium": "Street lamps", 
+                    "Chlorine": "Water disinfectant",
+                    "Iodine": "Antiseptic"
+                }
+            },
+            {
+                type: "matching",
+                question: "Match the following acids with their chemical formulas:",
+                section: "C",
+                matchingSet: 3,
+                leftItems: ["Hydrochloric acid", "Sulfuric acid", "Nitric acid", "Carbonic acid", "Phosphoric acid"],
+                rightItems: ["HCl", "H2SO4", "HNO3", "H2CO3", "H3PO4"],
+                correctMatches: {
+                    "Hydrochloric acid": "HCl",
+                    "Sulfuric acid": "H2SO4",
+                    "Nitric acid": "HNO3",
+                    "Carbonic acid": "H2CO3",
+                    "Phosphoric acid": "H3PO4"
+                }
+            },
+
+            // Section D: MCQ Reasoning (12 questions)
+            {
+                type: "mcq-reasoning",
+                question: "In the formation of NaCl, what happens to the electrons?",
+                options: ["Sodium gives 1 electron to chlorine", "Chlorine gives 1 electron to sodium", "Both share 1 electron each", "Sodium and chlorine do not bond"],
+                correct: 0,
+                section: "D"
+            },
+            {
+                type: "mcq-reasoning",
+                question: "Which of the following is not a difference between ionic and covalent compounds?",
+                options: ["Ionic are soluble in water, covalent in organic solvents", "Ionic conduct electricity when molten, covalent usually do not", "Ionic bonds involve sharing, covalent involve transfer", "Ionic bonds are stronger than most covalent bonds"],
+                correct: 2,
+                section: "D"
+            },
+            {
+                type: "mcq-reasoning",
+                question: "Water has high surface tension because of ________.",
+                options: ["Metallic bonds", "Ionic bonds", "Hydrogen bonds", "Van der Waals forces"],
+                correct: 2,
+                section: "D"
+            },
+            {
+                type: "mcq-reasoning",
+                question: "Which of these is a giant covalent structure?",
+                options: ["Oxygen", "Diamond", "Water", "Ammonia"],
+                correct: 1,
+                section: "D"
+            },
+            {
+                type: "mcq-reasoning",
+                question: "Metals conduct electricity because ________.",
+                options: ["They have ions only", "They have free-moving electrons", "They have shared protons", "They dissolve in water"],
+                correct: 1,
+                section: "D"
+            },
+            {
+                type: "mcq-reasoning",
+                question: "Why do noble gases rarely form compounds?",
+                options: ["They have complete outer electron shells", "They are too heavy", "They are radioactive", "They have no protons"],
+                correct: 0,
+                section: "D"
+            },
+            {
+                type: "mcq-reasoning",
+                question: "Which property increases down Group 1 of the periodic table?",
+                options: ["Ionization energy", "Atomic radius", "Electronegativity", "Melting point"],
+                correct: 1,
+                section: "D"
+            },
+            {
+                type: "mcq-reasoning",
+                question: "What type of bonding is present in magnesium oxide (MgO)?",
+                options: ["Covalent bonding", "Metallic bonding", "Ionic bonding", "Hydrogen bonding"],
+                correct: 2,
+                section: "D"
+            },
+            {
+                type: "mcq-reasoning",
+                question: "Which statement about isotopes is correct?",
+                options: ["They have different numbers of protons", "They have different numbers of neutrons", "They have different chemical properties", "They have different electron configurations"],
+                correct: 1,
+                section: "D"
+            },
+            {
+                type: "mcq-reasoning",
+                question: "Why is graphite a good conductor of electricity?",
+                options: ["It has ionic bonds", "It has delocalized electrons", "It dissolves in water", "It has a high melting point"],
+                correct: 1,
+                section: "D"
+            },
+            {
+                type: "mcq-reasoning",
+                question: "What happens to the reactivity of halogens as you go down Group 7?",
+                options: ["It increases", "It decreases", "It stays the same", "It becomes unpredictable"],
+                correct: 1,
+                section: "D"
+            },
+            {
+                type: "mcq-reasoning",
+                question: "Which factor does NOT affect the rate of a chemical reaction?",
+                options: ["Temperature", "Concentration", "Catalyst", "Atomic mass of products"],
+                correct: 3,
+                section: "D"
+            }
+        ];
+
+        // Google Sheets Configuration
+        const GOOGLE_SHEETS_CONFIG = {
+            // Replace with your Google Apps Script Web App URL
+            scriptURL: 'https://script.google.com/macros/s/AKfycbx3_FiSNpjcv4l-HKm6n8R1vKv41Vh5uPqi85_xDnAMN7Ga4qf-MbqWHuzBYhvFP0bzew/exec',
+            sheetName: 'Chemistry Mastery Logs'
+        };
+
+        // Global exam state
+        let currentQuestion = 0;
+        let answers = {};
+        let flagged = new Set();
+        let startTime;
+        let timerInterval;
+        let studentName = "";
+        let studentClass = "";
+        let examId = "";
+
+        function startExam() {
+            studentName = document.getElementById('studentName').value.trim();
+            if (!studentName) {
+                alert('Please enter your name to begin the assessment');
+                return;
+            }
+            
+            studentClass = document.getElementById('studentClass').value.trim();
+            
+            // Generate unique exam ID
+            examId = generateExamId();
+            
+            // Shuffle questions for randomization
+            shuffleArray(questions);
+            
+            // Initialize exam state
+            currentQuestion = 0;
+            answers = {};
+            flagged = new Set();
+            
+            // Log exam start
+            logExamStart();
+            
+            // Start the timer
+            startTime = Date.now();
+            startTimer();
+            
+            // Show exam screen and first question
+            showScreen('examScreen');
+            displayQuestion();
+        }
+
+        function generateExamId() {
+            const timestamp = Date.now();
+            const random = Math.random().toString(36).substr(2, 9);
+            return `CHEM_${timestamp}_${random}`;
+        }
+
+        async function logExamStart() {
+            const data = {
+                action: 'start',
+                examId: examId,
+                studentName: studentName,
+                studentClass: studentClass,
+                startTime: new Date().toISOString(),
+                totalQuestions: questions.length,
+                userAgent: navigator.userAgent,
+                timestamp: Date.now()
+            };
+
+            try {
+                await sendToGoogleSheets(data);
+                console.log('Exam start logged successfully');
+            } catch (error) {
+                console.error('Failed to log exam start:', error);
+                // Continue with exam even if logging fails
+            }
+        }
+
+        async function logQuestionAnswer(questionIndex, answer, timeSpent) {
+            const question = questions[questionIndex];
+            const data = {
+                action: 'answer',
+                examId: examId,
+                studentName: studentName,
+                questionNumber: questionIndex + 1,
+                questionType: question.type,
+                questionText: question.question.substring(0, 100) + '...',
+                userAnswer: formatAnswerForLogging(question, answer),
+                correctAnswer: formatCorrectAnswerForLogging(question),
+                isCorrect: checkAnswerCorrectness(question, answer),
+                timeSpent: timeSpent,
+                flagged: flagged.has(questionIndex),
+                timestamp: new Date().toISOString()
+            };
+
+            try {
+                await sendToGoogleSheets(data);
+            } catch (error) {
+                console.error('Failed to log question answer:', error);
+            }
+        }
+
+        async function logExamCompletion(results) {
+            const data = {
+                action: 'complete',
+                examId: examId,
+                studentName: studentName,
+                studentClass: studentClass,
+                finalScore: results.percentage,
+                correctAnswers: results.correct,
+                wrongAnswers: results.wrong,
+                totalMarks: results.totalMarks,
+                maxMarks: results.maxMarks,
+                timeTaken: results.timeTaken,
+                completionTime: new Date().toISOString(),
+                flaggedQuestions: Array.from(flagged).join(','),
+                sectionBreakdown: JSON.stringify(results.sectionBreakdown),
+                timestamp: Date.now()
+            };
+
+            try {
+                await sendToGoogleSheets(data);
+                console.log('Exam completion logged successfully');
+            } catch (error) {
+                console.error('Failed to log exam completion:', error);
+            }
+        }
+
+        async function sendToGoogleSheets(data) {
+            const response = await fetch(GOOGLE_SHEETS_CONFIG.scriptURL, {
+                method: 'POST',
+                mode: 'cors',
+                headers: {
+                    'Content-Type': 'text/plain',
+                },
+                body: JSON.stringify(data)
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            return await response.json();
+        }
+
+        function formatAnswerForLogging(question, answer) {
+            if (question.type === 'matching') {
+                if (answer && typeof answer === 'object') {
+                    return Object.keys(answer).map(key => `${key}→${answer[key]}`).join('; ');
+                }
+                return 'Not answered';
+            } else {
+                return answer !== undefined ? question.options[answer] : 'Not answered';
+            }
+        }
+
+        function formatCorrectAnswerForLogging(question) {
+            if (question.type === 'matching') {
+                return Object.keys(question.correctMatches).map(key => `${key}→${question.correctMatches[key]}`).join('; ');
+            } else {
+                return question.options[question.correct];
+            }
+        }
+
+        function checkAnswerCorrectness(question, answer) {
+            if (question.type === 'matching') {
+                if (answer && typeof answer === 'object') {
+                    const correctMatches = question.correctMatches;
+                    if (Object.keys(answer).length === 5) {
+                        for (let leftItem in correctMatches) {
+                            if (answer[leftItem] !== correctMatches[leftItem]) {
+                                return false;
+                            }
+                        }
+                        return true;
+                    }
+                }
+                return false;
+            } else {
+                return answer === question.correct;
+            }
+        }
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            document.getElementById(screenId).classList.add('active');
+        }
+
+        function startTimer() {
+            let timeLeft = 35 * 60; // 35 minutes in seconds
+            
+            timerInterval = setInterval(() => {
+                const minutes = Math.floor(timeLeft / 60);
+                const seconds = timeLeft % 60;
+                document.getElementById('timer').textContent = 
+                    `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    finishExam();
+                }
+                timeLeft--;
+            }, 1000);
+        }
+
+        let questionStartTime;
+
+        function displayQuestion() {
+            const question = questions[currentQuestion];
+            
+            // Record when this question was displayed
+            questionStartTime = Date.now();
+            
+            // Update progress indicators
+            const progress = ((currentQuestion + 1) / questions.length) * 100;
+            document.getElementById('progressFill').style.width = `${progress}%`;
+            document.getElementById('progressText').textContent = `${Math.round(progress)}%`;
+            document.getElementById('questionCounter').textContent = `Q ${currentQuestion + 1}/${questions.length}`;
+            document.getElementById('questionNumber').textContent = `Question ${currentQuestion + 1} of ${questions.length}`;
+            
+            // Update question type badge
+            let typeText = '';
+            switch(question.type) {
+                case 'fill-blank':
+                    typeText = 'Fill in the Blank';
+                    break;
+                case 'true-false':
+                    typeText = 'True or False';
+                    break;
+                case 'matching':
+                    typeText = 'Matching Activity';
+                    break;
+                case 'mcq-reasoning':
+                    typeText = 'MCQ Reasoning';
+                    break;
+                default:
+                    typeText = 'Multiple Choice';
+            }
+            document.getElementById('questionType').textContent = typeText;
+            
+            // Generate answer options
+            const container = document.getElementById('optionsContainer');
+            container.innerHTML = '';
+            
+            if (question.type === 'fill-blank') {
+                displayFillBlankQuestion(question, container);
+            } else if (question.type === 'matching') {
+                displayMatchingQuestion(question, container);
+            } else {
+                // Display question text for non-fill-blank questions
+                document.getElementById('questionText').textContent = question.question;
+                
+                question.options.forEach((option, index) => {
+                    const optionDiv = document.createElement('div');
+                    optionDiv.className = 'option-card';
+                    optionDiv.textContent = option;
+                    optionDiv.onclick = () => selectOption(index);
+                    
+                    // Restore previous selection if exists
+                    if (answers[currentQuestion] === index) {
+                        optionDiv.classList.add('selected');
+                    }
+                    
+                    container.appendChild(optionDiv);
+                });
+            }
+            
+            // Update navigation buttons
+            document.getElementById('prevBtn').disabled = currentQuestion === 0;
+            document.getElementById('nextBtn').textContent = 
+                currentQuestion === questions.length - 1 ? '🏁 Finish' : 'Next →';
+            
+            // Update flag button
+            const flagBtn = document.getElementById('flagBtn');
+            flagBtn.textContent = flagged.has(currentQuestion) ? '🚩 Unflag' : '🚩 Flag';
+            flagBtn.classList.toggle('flagged', flagged.has(currentQuestion));
+        }
+
+        function displayMatchingQuestion(question, container) {
+            // Reset matching state to avoid bleed-over when navigating
+            currentMatches = {};
+
+            // Set the main question text for matching activities
+            document.getElementById('questionText').textContent = question.question;
+            
+            // Create matching interface
+            const matchingContainer = document.createElement('div');
+            matchingContainer.className = 'matching-container';
+            
+            // Left column (items to match)
+            const leftColumn = document.createElement('div');
+            leftColumn.className = 'matching-column';
+            leftColumn.innerHTML = '<div class="column-header">Items</div>';
+            
+            // Right column (descriptions/matches)
+            const rightColumn = document.createElement('div');
+            rightColumn.className = 'matching-column';
+            rightColumn.innerHTML = '<div class="column-header">Match with</div>';
+            
+            // Shuffle right items for randomization
+            const shuffledRightItems = [...question.rightItems];
+            shuffleArray(shuffledRightItems);
+            
+            // Create left items
+            question.leftItems.forEach((item, index) => {
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'matching-item';
+                itemDiv.textContent = item;
+                itemDiv.dataset.leftItem = item;
+                itemDiv.onclick = () => selectMatchingItem(itemDiv, 'left');
+                leftColumn.appendChild(itemDiv);
+            });
+            
+            // Create right items (shuffled)
+            shuffledRightItems.forEach((item, index) => {
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'matching-item';
+                itemDiv.textContent = item;
+                itemDiv.dataset.rightItem = item;
+                itemDiv.onclick = () => selectMatchingItem(itemDiv, 'right');
+                rightColumn.appendChild(itemDiv);
+            });
+            
+            matchingContainer.appendChild(leftColumn);
+            matchingContainer.appendChild(rightColumn);
+            
+            // Progress indicator
+            const progressDiv = document.createElement('div');
+            progressDiv.className = 'matching-progress';
+            progressDiv.id = 'matchingProgress';
+            progressDiv.textContent = '0/5 matched - Click items to connect them';
+            
+            container.appendChild(matchingContainer);
+            container.appendChild(progressDiv);
+            
+            // Restore previous matches if any
+            if (answers[currentQuestion]) {
+                restoreMatchingState(question, answers[currentQuestion]);
+            }
+        }
+
+        let selectedLeftItem = null;
+        let selectedRightItem = null;
+        let currentMatches = {};
+
+        function selectMatchingItem(itemDiv, side) {
+            const question = questions[currentQuestion];
+            
+            // Clear previous selections in the same column
+            const column = itemDiv.parentElement;
+            column.querySelectorAll('.matching-item').forEach(item => {
+                if (!item.classList.contains('matched')) {
+                    item.classList.remove('selected');
+                }
+            });
+            
+            // Don't allow selection of already matched items
+            if (itemDiv.classList.contains('matched')) {
+                return;
+            }
+            
+            // Select current item
+            itemDiv.classList.add('selected');
+            
+            if (side === 'left') {
+                selectedLeftItem = itemDiv.dataset.leftItem;
+                selectedRightItem = null;
+                // Clear right selection
+                document.querySelectorAll('.matching-column')[1].querySelectorAll('.matching-item').forEach(item => {
+                    if (!item.classList.contains('matched')) {
+                        item.classList.remove('selected');
+                    }
+                });
+            } else {
+                selectedRightItem = itemDiv.dataset.rightItem;
+                
+                // If we have both selections, make the match (regardless of correctness)
+                if (selectedLeftItem && selectedRightItem) {
+                    makeMatch(question);
+                }
+            }
+        }
+
+        function makeMatch(question) {
+            // Always allow the match - this is an exam, students can make wrong choices
+            markAsMatched(selectedLeftItem, selectedRightItem);
+            currentMatches[selectedLeftItem] = selectedRightItem;
+            // Persist matches per question
+            answers[currentQuestion] = { ...currentMatches };
+            
+            // Update progress
+            const matchedCount = Object.keys(currentMatches).length;
+            const progressDiv = document.getElementById('matchingProgress');
+            progressDiv.textContent = `${matchedCount}/5 matched`;
+            
+            if (matchedCount === 5) {
+                progressDiv.textContent = '✅ All items matched! You can now proceed.';
+                progressDiv.classList.add('complete');
+            }
+            
+            // Save the answer (even if some matches are wrong)
+            answers[currentQuestion] = { ...currentMatches };
+            
+            // Reset selections
+            selectedLeftItem = null;
+            selectedRightItem = null;
+        }
+
+        function markAsMatched(leftItem, rightItem) {
+            // Find and mark left item
+            document.querySelectorAll('[data-left-item]').forEach(item => {
+                if (item.dataset.leftItem === leftItem) {
+                    item.classList.remove('selected');
+                    item.classList.add('matched');
+                }
+            });
+            
+            // Find and mark right item
+            document.querySelectorAll('[data-right-item]').forEach(item => {
+                if (item.dataset.rightItem === rightItem) {
+                    item.classList.remove('selected');
+                    item.classList.add('matched');
+                }
+            });
+        }
+
+        function displayFillBlankQuestion(question, container) {
+            // Create the fill-in-the-blank interface
+            const fillBlankContainer = document.createElement('div');
+            fillBlankContainer.className = 'fill-blank-container';
+            
+            // Create question text with drop zones
+            const questionDiv = document.createElement('div');
+            questionDiv.className = 'fill-blank-question';
+            
+            // Replace the blank with a drop zone
+            const questionText = question.question.replace('________', '<span class="drop-zone" data-blank-id="0">Drop here</span>');
+            questionDiv.innerHTML = questionText;
+            
+            // Set the question text in the header
+            document.getElementById('questionText').textContent = 'Drag the correct answer to fill in the blank:';
+            
+            // Create options bank
+            const optionsBank = document.createElement('div');
+            optionsBank.className = 'options-bank';
+            optionsBank.innerHTML = `
+                <div class="bank-header">
+                    🎯 Answer Options
+                </div>
+                <div class="draggable-options" id="draggableOptions">
+                </div>
+            `;
+            
+            // Shuffle options for randomization
+            const shuffledOptions = [...question.options];
+            shuffleArray(shuffledOptions);
+            
+            // Create draggable options
+            const draggableContainer = optionsBank.querySelector('#draggableOptions');
+            shuffledOptions.forEach((option, index) => {
+                const optionDiv = document.createElement('div');
+                optionDiv.className = 'draggable-option';
+                optionDiv.textContent = option;
+                optionDiv.draggable = true;
+                optionDiv.dataset.optionText = option;
+                optionDiv.dataset.originalIndex = question.options.indexOf(option);
+                
+                // Add drag event listeners
+                optionDiv.addEventListener('dragstart', handleDragStart);
+                optionDiv.addEventListener('dragend', handleDragEnd);
+                
+                draggableContainer.appendChild(optionDiv);
+            });
+            
+            // Progress indicator
+            const progressDiv = document.createElement('div');
+            progressDiv.className = 'fill-blank-progress';
+            progressDiv.id = 'fillBlankProgress';
+            progressDiv.textContent = 'Drag an option to the blank space above';
+            
+            fillBlankContainer.appendChild(questionDiv);
+            fillBlankContainer.appendChild(optionsBank);
+            fillBlankContainer.appendChild(progressDiv);
+            
+            container.appendChild(fillBlankContainer);
+            
+            // Set up drop zones
+            setupDropZones();
+            
+            // Restore previous answer if any
+            if (answers[currentQuestion] !== undefined) {
+                restoreFillBlankAnswer(question);
+            }
+        }
+
+        function setupDropZones() {
+            const dropZones = document.querySelectorAll('.drop-zone');
+            
+            dropZones.forEach(zone => {
+                zone.addEventListener('dragover', handleDragOver);
+                zone.addEventListener('drop', handleDrop);
+                zone.addEventListener('dragleave', handleDragLeave);
+                zone.addEventListener('click', handleDropZoneClick);
+            });
+        }
+
+        function handleDragStart(e) {
+            e.dataTransfer.setData('text/plain', e.target.dataset.optionText);
+            e.dataTransfer.setData('originalIndex', e.target.dataset.originalIndex);
+            e.target.classList.add('dragging');
+        }
+
+        function handleDragEnd(e) {
+            e.target.classList.remove('dragging');
+        }
+
+        function handleDragOver(e) {
+            e.preventDefault();
+            e.target.classList.add('drag-over');
+        }
+
+        function handleDragLeave(e) {
+            e.target.classList.remove('drag-over');
+        }
+
+        function handleDrop(e) {
+            e.preventDefault();
+            e.target.classList.remove('drag-over');
+            
+            const optionText = e.dataTransfer.getData('text/plain');
+            const originalIndex = parseInt(e.dataTransfer.getData('originalIndex'));
+            const blankId = e.target.dataset.blankId;
+            
+            // Fill the drop zone
+            e.target.textContent = optionText;
+            e.target.classList.add('filled');
+            e.target.dataset.selectedIndex = originalIndex;
+            
+            // Mark the dragged option as used
+            const draggedOption = document.querySelector(`[data-option-text="${optionText}"]`);
+            if (draggedOption) {
+                draggedOption.classList.add('used');
+                draggedOption.draggable = false;
+            }
+            
+            // Save the answer
+            answers[currentQuestion] = originalIndex;
+            // Log the answer on drop for fill-blank
+            const timeSpent = Date.now() - (questionStartTime || startTime);
+            logQuestionAnswer(currentQuestion, originalIndex, timeSpent);
+            
+            // Update progress
+            updateFillBlankProgress();
+        }
+
+        function handleDropZoneClick(e) {
+            if (e.target.classList.contains('filled')) {
+                // Remove the answer and restore the option
+                const optionText = e.target.textContent;
+                const originalIndex = e.target.dataset.selectedIndex;
+                
+                // Reset drop zone
+                e.target.textContent = 'Drop here';
+                e.target.classList.remove('filled');
+                delete e.target.dataset.selectedIndex;
+                
+                // Restore the option
+                const option = document.querySelector(`[data-option-text="${optionText}"]`);
+                if (option) {
+                    option.classList.remove('used');
+                    option.draggable = true;
+                }
+                
+                // Clear the answer
+                delete answers[currentQuestion];
+                // Log the removal action for fill-blank
+                const timeSpent = Date.now() - (questionStartTime || startTime);
+                logQuestionAnswer(currentQuestion, undefined, timeSpent);
+                
+                // Update progress
+                updateFillBlankProgress();
+            }
+        }
+
+        function updateFillBlankProgress() {
+            const progressDiv = document.getElementById('fillBlankProgress');
+            const filledZones = document.querySelectorAll('.drop-zone.filled');
+            
+            if (filledZones.length === 1) {
+                progressDiv.textContent = '✅ Blank filled! You can now proceed.';
+                progressDiv.classList.add('complete');
+            } else {
+                progressDiv.textContent = 'Drag an option to the blank space above';
+                progressDiv.classList.remove('complete');
+            }
+        }
+
+        function restoreFillBlankAnswer(question) {
+            const savedIndex = answers[currentQuestion];
+            const savedOption = question.options[savedIndex];
+            
+            // Fill the drop zone
+            const dropZone = document.querySelector('.drop-zone');
+            if (dropZone && savedOption) {
+                dropZone.textContent = savedOption;
+                dropZone.classList.add('filled');
+                dropZone.dataset.selectedIndex = savedIndex;
+                
+                // Mark option as used
+                const option = document.querySelector(`[data-option-text="${savedOption}"]`);
+                if (option) {
+                    option.classList.add('used');
+                    option.draggable = false;
+                }
+                
+                // Update progress
+                updateFillBlankProgress();
+            }
+        }
+
+        function restoreMatchingState(question, savedMatches) {
+            currentMatches = { ...savedMatches };
+            
+            // Mark items as matched
+            Object.keys(savedMatches).forEach(leftItem => {
+                const rightItem = savedMatches[leftItem];
+                markAsMatched(leftItem, rightItem);
+            });
+            
+            // Update progress
+            const matchedCount = Object.keys(currentMatches).length;
+            const progressDiv = document.getElementById('matchingProgress');
+            progressDiv.textContent = `${matchedCount}/5 matched`;
+            
+            if (matchedCount === 5) {
+                progressDiv.textContent = '✅ All items matched! You can now proceed.';
+                progressDiv.classList.add('complete');
+            }
+        }
+
+        function selectOption(index) {
+            // Remove previous selections
+            document.querySelectorAll('.option-card').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            
+            // Add selection to clicked option
+            document.querySelectorAll('.option-card')[index].classList.add('selected');
+            
+            // Calculate time spent on this question
+            const timeSpent = Date.now() - (questionStartTime || startTime);
+            
+            // Save the answer
+            answers[currentQuestion] = index;
+            
+            // Log the answer
+            logQuestionAnswer(currentQuestion, index, timeSpent);
+        }
+
+        function previousQuestion() {
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                displayQuestion();
+            }
+        }
+
+        function nextQuestion() {
+            if (currentQuestion === questions.length - 1) {
+                finishExam();
+            } else {
+                currentQuestion++;
+                displayQuestion();
+            }
+        }
+
+        function flagQuestion() {
+            if (flagged.has(currentQuestion)) {
+                flagged.delete(currentQuestion);
+            } else {
+                flagged.add(currentQuestion);
+            }
+            displayQuestion();
+        }
+
+        function finishExam() {
+            clearInterval(timerInterval);
+            
+            // Calculate comprehensive results
+            let correct = 0;
+            let wrong = 0;
+            const sectionBreakdown = {
+                A: { correct: 0, total: 0 },
+                B: { correct: 0, total: 0 },
+                C: { correct: 0, total: 0 },
+                D: { correct: 0, total: 0 }
+            };
+            
+            questions.forEach((question, index) => {
+                sectionBreakdown[question.section].total++;
+                
+                let isCorrect = false;
+                if (question.type === 'matching') {
+                    // For matching questions, check if all pairs are correctly matched
+                    const userMatches = answers[index];
+                    if (userMatches && typeof userMatches === 'object') {
+                        const correctMatches = question.correctMatches;
+                        let allCorrect = true;
+                        
+                        // Check if all 5 pairs are correctly matched
+                        if (Object.keys(userMatches).length === 5) {
+                            for (let leftItem in correctMatches) {
+                                if (userMatches[leftItem] !== correctMatches[leftItem]) {
+                                    allCorrect = false;
+                                    break;
+                                }
+                            }
+                        } else {
+                            allCorrect = false;
+                        }
+                        
+                        isCorrect = allCorrect;
+                    }
+                } else {
+                    // Regular questions
+                    isCorrect = answers[index] === question.correct;
+                }
+                
+                if (isCorrect) {
+                    correct++;
+                    sectionBreakdown[question.section].correct++;
+                } else {
+                    wrong++;
+                }
+            });
+            
+            const percentage = Math.round((correct / questions.length) * 100);
+            const totalMarks = correct * 2; // 2 marks per question
+            const maxMarks = questions.length * 2;
+            const timeTaken = Math.floor((Date.now() - startTime) / 1000);
+            const minutes = Math.floor(timeTaken / 60);
+            const seconds = timeTaken % 60;
+            const timeString = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+            
+            // Prepare results object for logging
+            const results = {
+                percentage: percentage,
+                correct: correct,
+                wrong: wrong,
+                totalMarks: totalMarks,
+                maxMarks: maxMarks,
+                timeTaken: timeString,
+                sectionBreakdown: sectionBreakdown
+            };
+            
+            // Log exam completion
+            logExamCompletion(results);
+            
+            // Display results with animation
+            document.getElementById('finalScore').textContent = `${percentage}%`;
+            document.getElementById('correctCount').textContent = correct;
+            document.getElementById('wrongCount').textContent = wrong;
+            document.getElementById('totalMarks').textContent = `${totalMarks}/${maxMarks}`;
+            document.getElementById('timeTaken').textContent = timeString;
+            
+            showScreen('resultsScreen');
+            
+            // Show celebratory confetti for good scores
+            if (percentage >= 70) {
+                showConfetti();
+            }
+        }
+
+        function showConfetti() {
+            const confetti = document.createElement('div');
+            confetti.className = 'confetti';
+            document.body.appendChild(confetti);
+
+            const colors = ['#667eea', '#764ba2', '#f093fb', '#f5576c', '#4facfe', '#00f2fe'];
+            
+            for (let i = 0; i < 50; i++) {
+                const piece = document.createElement('div');
+                piece.className = 'confetti-piece';
+                piece.style.left = Math.random() * 100 + '%';
+                piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+                piece.style.animationDelay = Math.random() * 3 + 's';
+                confetti.appendChild(piece);
+            }
+
+            setTimeout(() => {
+                document.body.removeChild(confetti);
+            }, 3000);
+        }
+
+        function restartExam() {
+            if (confirm('Are you sure you want to restart? All progress will be lost.')) {
+                // Stop any running timer
+                if (timerInterval) {
+                    clearInterval(timerInterval);
+                    timerInterval = null;
+                }
+                
+                // Reset all exam state variables
+                currentQuestion = 0;
+                answers = {};
+                flagged = new Set();
+                startTime = null;
+                studentName = "";
+                studentClass = "";
+                
+                // Reset form fields
+                document.getElementById('studentName').value = '';
+                document.getElementById('studentClass').value = '';
+                
+                // Reset all progress indicators
+                document.getElementById('progressFill').style.width = '0%';
+                document.getElementById('progressText').textContent = '0%';
+                document.getElementById('timer').textContent = '35:00';
+                document.getElementById('questionCounter').textContent = 'Q 1/40';
+                
+                // Clear any selected options
+                document.querySelectorAll('.option-card').forEach(opt => {
+                    opt.classList.remove('selected');
+                });
+                
+                // Shuffle questions for fresh randomization
+                shuffleArray(questions);
+                
+                // Return to start screen
+                showScreen('startScreen');
+                
+                // Success message
+                setTimeout(() => {
+                    alert('Assessment reset successfully! You can now start fresh.');
+                }, 100);
+            }
+        }
+
+        function showDetailedResults() {
+            document.getElementById('detailedResultsOverlay').classList.add('active');
+            generateDetailedReport();
+        }
+
+        function closeDetailedResults() {
+            document.getElementById('detailedResultsOverlay').classList.remove('active');
+        }
+
+        function generateDetailedReport() {
+            const percentage = document.getElementById('finalScore').textContent;
+            const correct = document.getElementById('correctCount').textContent;
+            const wrong = document.getElementById('wrongCount').textContent;
+            const marks = document.getElementById('totalMarks').textContent;
+            const time = document.getElementById('timeTaken').textContent;
+            
+            // Group results by section
+            const sectionResults = {
+                A: { title: 'Fill in the Blanks', correct: 0, total: 0, questions: [] },
+                B: { title: 'True or False', correct: 0, total: 0, questions: [] },
+                C: { title: 'Matching', correct: 0, total: 0, questions: [] },
+                D: { title: 'MCQ Reasoning', correct: 0, total: 0, questions: [] }
+            };
+
+            questions.forEach((question, index) => {
+                const section = sectionResults[question.section];
+                section.total++;
+                
+                let userAnswer, correctAnswer, isCorrect;
+                
+                if (question.type === 'matching') {
+                    const userMatches = answers[index];
+                    if (userMatches && typeof userMatches === 'object') {
+                        const correctMatches = question.correctMatches;
+                        let allCorrect = true;
+                        
+                        // Check if all pairs are correctly matched
+                        if (Object.keys(userMatches).length === 5) {
+                            for (let leftItem in correctMatches) {
+                                if (userMatches[leftItem] !== correctMatches[leftItem]) {
+                                    allCorrect = false;
+                                    break;
+                                }
+                            }
+                        } else {
+                            allCorrect = false;
+                        }
+                        
+                        isCorrect = allCorrect;
+                        if (isCorrect) section.correct++;
+                        
+                        // Format user matches for display
+                        userAnswer = Object.keys(userMatches).length > 0 ? 
+                            Object.keys(userMatches).map(key => `${key} → ${userMatches[key]}`).join('; ') : 
+                            'Not answered';
+                        
+                        // Format correct matches for display
+                        correctAnswer = Object.keys(correctMatches).map(key => `${key} → ${correctMatches[key]}`).join('; ');
+                    } else {
+                        isCorrect = false;
+                        userAnswer = 'Not answered';
+                        correctAnswer = Object.keys(question.correctMatches).map(key => `${key} → ${question.correctMatches[key]}`).join('; ');
+                    }
+                } else {
+                    const userAnswerIndex = answers[index];
+                    isCorrect = userAnswerIndex === question.correct;
+                    if (isCorrect) section.correct++;
+                    
+                    userAnswer = userAnswerIndex !== undefined ? question.options[userAnswerIndex] : 'Not answered';
+                    correctAnswer = question.options[question.correct];
+                }
+                
+                section.questions.push({
+                    number: index + 1,
+                    question: question.question,
+                    userAnswer: userAnswer,
+                    correctAnswer: correctAnswer,
+                    isCorrect: isCorrect,
+                    flagged: flagged.has(index)
+                });
+            });
+
+            let reportHTML = `
+                <div style="text-align: center; margin-bottom: 2rem;">
+                    <h2 style="color: #2d3748; margin-bottom: 0.5rem;">🧪 Chemistry Assessment Report</h2>
+                    <div style="background: linear-gradient(135deg, #667eea, #764ba2); color: white; padding: 1rem; border-radius: 10px; margin: 1rem 0;">
+                        <h3>${studentName}${studentClass ? ` (${studentClass})` : ''}</h3>
+                        <p style="margin: 0.5rem 0;"><strong>Final Score: ${percentage}</strong></p>
+                        <p style="margin: 0.5rem 0;">Correct: ${correct} | Wrong: ${wrong} | Marks: ${marks}</p>
+                        <p style="margin: 0.5rem 0;">Time Taken: ${time} | Date: ${new Date().toLocaleDateString()}</p>
+                    </div>
+                </div>
+            `;
+
+            // Section breakdown
+            Object.keys(sectionResults).forEach(sectionLetter => {
+                const section = sectionResults[sectionLetter];
+                const sectionPercentage = Math.round((section.correct / section.total) * 100);
+                
+                reportHTML += `
+                    <div style="margin-bottom: 2rem; border: 2px solid #e2e8f0; border-radius: 10px; overflow: hidden;">
+                        <div style="background: #f7fafc; padding: 1rem; border-bottom: 2px solid #e2e8f0;">
+                            <h4 style="margin: 0; color: #2d3748;">Section ${sectionLetter}: ${section.title}</h4>
+                            <p style="margin: 0.5rem 0 0 0; color: #4a5568;">Score: ${section.correct}/${section.total} (${sectionPercentage}%)</p>
+                        </div>
+                        <div style="padding: 1rem;">
+                `;
+                
+                section.questions.forEach(q => {
+                    const statusColor = q.isCorrect ? '#10b981' : '#ef4444';
+                    const statusIcon = q.isCorrect ? '✅' : '❌';
+                    const flagIcon = q.flagged ? '🚩 ' : '';
+                    
+                    reportHTML += `
+                        <div style="margin-bottom: 1rem; padding: 1rem; background: ${q.isCorrect ? '#f0fdf4' : '#fef2f2'}; border-radius: 8px; border-left: 4px solid ${statusColor};">
+                            <p style="margin: 0 0 0.5rem 0; font-weight: 600; color: #2d3748;">
+                                ${statusIcon} ${flagIcon}Q${q.number}: ${q.question}
+                            </p>
+                            <p style="margin: 0.25rem 0; color: #4a5568;"><strong>Your answer:</strong> ${q.userAnswer}</p>
+                            <p style="margin: 0.25rem 0; color: #059669;"><strong>Correct answer:</strong> ${q.correctAnswer}</p>
+                        </div>
+                    `;
+                });
+                
+                reportHTML += `
+                        </div>
+                    </div>
+                `;
+            });
+
+            document.getElementById('detailedReportContent').innerHTML = reportHTML;
+        }
+
+        function downloadReportAsPDF() {
+            const percentage = document.getElementById('finalScore').textContent;
+            const correct = document.getElementById('correctCount').textContent;
+            const wrong = document.getElementById('wrongCount').textContent;
+            const marks = document.getElementById('totalMarks').textContent;
+            const time = document.getElementById('timeTaken').textContent;
+            
+            // Create a beautifully designed HTML content for PDF
+            let pdfContent = `
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <meta charset="UTF-8">
+                    <title>Chemistry Assessment Report - ${studentName}</title>
+                    <style>
+                        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+                        
+                        * { margin: 0; padding: 0; box-sizing: border-box; }
+                        
+                        body { 
+                            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; 
+                            line-height: 1.6; 
+                            color: #1a202c;
+                            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                            min-height: 100vh;
+                            padding: 0;
+                        }
+                        
+                        .pdf-container {
+                            max-width: 210mm;
+                            margin: 0 auto;
+                            background: white;
+                            box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+                            min-height: 297mm;
+                        }
+                        
+                        .header-section {
+                            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                            color: white;
+                            padding: 40px;
+                            text-align: center;
+                            position: relative;
+                            overflow: hidden;
+                        }
+                        
+                        .header-section::before {
+                            content: '';
+                            position: absolute;
+                            top: -50%;
+                            left: -50%;
+                            width: 200%;
+                            height: 200%;
+                            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="2" fill="rgba(255,255,255,0.1)"/><circle cx="80" cy="40" r="1.5" fill="rgba(255,255,255,0.1)"/><circle cx="40" cy="80" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="90" cy="90" r="2.5" fill="rgba(255,255,255,0.1)"/><circle cx="10" cy="60" r="1.2" fill="rgba(255,255,255,0.1)"/></svg>');
+                            animation: float 20s infinite linear;
+                        }
+                        
+                        .logo-section {
+                            font-size: 4rem;
+                            margin-bottom: 1rem;
+                            position: relative;
+                            z-index: 2;
+                        }
+                        
+                        .main-title {
+                            font-size: 2.5rem;
+                            font-weight: 800;
+                            margin-bottom: 0.5rem;
+                            text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+                            position: relative;
+                            z-index: 2;
+                        }
+                        
+                        .student-info {
+                            font-size: 1.4rem;
+                            font-weight: 600;
+                            margin-bottom: 1rem;
+                            position: relative;
+                            z-index: 2;
+                        }
+                        
+                        .date-info {
+                            font-size: 1rem;
+                            opacity: 0.9;
+                            position: relative;
+                            z-index: 2;
+                        }
+                        
+                        .content-section {
+                            padding: 40px;
+                        }
+                        
+                        .score-showcase {
+                            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+                            color: white;
+                            padding: 30px;
+                            border-radius: 20px;
+                            text-align: center;
+                            margin-bottom: 40px;
+                            box-shadow: 0 15px 35px rgba(79, 172, 254, 0.3);
+                            position: relative;
+                            overflow: hidden;
+                        }
+                        
+                        .score-showcase::before {
+                            content: '';
+                            position: absolute;
+                            top: -50%;
+                            right: -50%;
+                            width: 100%;
+                            height: 100%;
+                            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+                        }
+                        
+                        .score-main {
+                            font-size: 4rem;
+                            font-weight: 900;
+                            margin-bottom: 1rem;
+                            text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+                            position: relative;
+                            z-index: 2;
+                        }
+                        
+                        .score-details {
+                            font-size: 1.2rem;
+                            font-weight: 500;
+                            position: relative;
+                            z-index: 2;
+                        }
+                        
+                        .stats-grid {
+                            display: grid;
+                            grid-template-columns: repeat(4, 1fr);
+                            gap: 20px;
+                            margin: 40px 0;
+                        }
+                        
+                        .stat-card {
+                            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+                            padding: 25px;
+                            border-radius: 15px;
+                            text-align: center;
+                            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+                            border: 1px solid rgba(255,255,255,0.2);
+                            transition: transform 0.3s ease;
+                        }
+                        
+                        .stat-value {
+                            font-size: 2.5rem;
+                            font-weight: 800;
+                            color: #2d3748;
+                            margin-bottom: 8px;
+                            background: linear-gradient(135deg, #667eea, #764ba2);
+                            -webkit-background-clip: text;
+                            -webkit-text-fill-color: transparent;
+                            background-clip: text;
+                        }
+                        
+                        .stat-label {
+                            color: #4a5568;
+                            font-size: 0.9rem;
+                            font-weight: 600;
+                            text-transform: uppercase;
+                            letter-spacing: 0.5px;
+                        }
+                        
+                        .section-container {
+                            margin-bottom: 40px;
+                            border-radius: 20px;
+                            overflow: hidden;
+                            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+                            border: 1px solid #e2e8f0;
+                        }
+                        
+                        .section-header {
+                            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+                            color: white;
+                            padding: 25px;
+                            position: relative;
+                        }
+                        
+                        .section-title {
+                            font-size: 1.5rem;
+                            font-weight: 700;
+                            margin-bottom: 8px;
+                        }
+                        
+                        .section-score {
+                            font-size: 1.1rem;
+                            font-weight: 500;
+                            opacity: 0.95;
+                        }
+                        
+                        .questions-container {
+                            padding: 25px;
+                            background: #fafafa;
+                        }
+                        
+                        .question-item {
+                            margin-bottom: 20px;
+                            padding: 20px;
+                            border-radius: 12px;
+                            border-left: 5px solid;
+                            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+                            background: white;
+                        }
+                        
+                        .question-correct {
+                            border-left-color: #10b981;
+                            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+                        }
+                        
+                        .question-incorrect {
+                            border-left-color: #ef4444;
+                            background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+                        }
+                        
+                        .question-header {
+                            display: flex;
+                            align-items: center;
+                            margin-bottom: 12px;
+                            font-weight: 700;
+                            color: #2d3748;
+                        }
+                        
+                        .question-number {
+                            background: linear-gradient(135deg, #667eea, #764ba2);
+                            color: white;
+                            padding: 6px 12px;
+                            border-radius: 20px;
+                            font-size: 0.85rem;
+                            margin-right: 12px;
+                            font-weight: 600;
+                        }
+                        
+                        .status-icon {
+                            font-size: 1.2rem;
+                            margin-right: 8px;
+                        }
+                        
+                        .flag-icon {
+                            margin-left: 8px;
+                        }
+                        
+                        .question-text {
+                            font-size: 1rem;
+                            line-height: 1.6;
+                            margin-bottom: 15px;
+                            color: #2d3748;
+                        }
+                        
+                        .answer-section {
+                            display: grid;
+                            gap: 8px;
+                        }
+                        
+                        .answer-row {
+                            padding: 8px 12px;
+                            border-radius: 8px;
+                            font-size: 0.9rem;
+                        }
+                        
+                        .user-answer {
+                            background: rgba(59, 130, 246, 0.1);
+                            border: 1px solid rgba(59, 130, 246, 0.2);
+                            color: #1e40af;
+                        }
+                        
+                        .correct-answer {
+                            background: rgba(16, 185, 129, 0.1);
+                            border: 1px solid rgba(16, 185, 129, 0.2);
+                            color: #047857;
+                        }
+                        
+                        .footer-section {
+                            background: linear-gradient(135deg, #2d3748 0%, #4a5568 100%);
+                            color: white;
+                            padding: 30px;
+                            text-align: center;
+                            margin-top: 40px;
+                        }
+                        
+                        .footer-content {
+                            font-size: 0.9rem;
+                            opacity: 0.9;
+                        }
+                        
+                        .footer-title {
+                            font-size: 1.2rem;
+                            font-weight: 700;
+                            margin-bottom: 8px;
+                        }
+                        
+                        @media print {
+                            body { background: white !important; }
+                            .pdf-container { box-shadow: none !important; }
+                        }
+                        
+                        .performance-indicator {
+                            display: inline-block;
+                            padding: 4px 12px;
+                            border-radius: 20px;
+                            font-size: 0.8rem;
+                            font-weight: 600;
+                            margin-left: 10px;
+                        }
+                        
+                        .excellent { background: #10b981; color: white; }
+                        .good { background: #3b82f6; color: white; }
+                        .average { background: #f59e0b; color: white; }
+                        .needs-improvement { background: #ef4444; color: white; }
+                    </style>
+                </head>
+                <body>
+                    <div class="pdf-container">
+                        <div class="header-section">
+                            <div class="logo-section">🧪</div>
+                            <h1 class="main-title">Chemistry Assessment Report</h1>
+                            <div class="student-info">${studentName}${studentClass ? ` • ${studentClass}` : ''}</div>
+                            <div class="date-info">Assessment completed on ${new Date().toLocaleDateString('en-US', { 
+                                weekday: 'long', 
+                                year: 'numeric', 
+                                month: 'long', 
+                                day: 'numeric' 
+                            })}</div>
+                        </div>
+                        
+                        <div class="content-section">
+                            <div class="score-showcase">
+                                <div class="score-main">${percentage}</div>
+                                <div class="score-details">
+                                    Final Score • ${marks} • Completed in ${time}
+                                </div>
+                            </div>
+                            
+                            <div class="stats-grid">
+                                <div class="stat-card">
+                                    <div class="stat-value">${correct}</div>
+                                    <div class="stat-label">Correct</div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-value">${wrong}</div>
+                                    <div class="stat-label">Incorrect</div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-value">${percentage}</div>
+                                    <div class="stat-label">Score</div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-value">${time}</div>
+                                    <div class="stat-label">Duration</div>
+                                </div>
+                            </div>
+            `;
+
+            // Group results by section for PDF
+            const sectionResults = {
+                A: { title: 'Fill in the Blanks', correct: 0, total: 0, questions: [] },
+                B: { title: 'True or False', correct: 0, total: 0, questions: [] },
+                C: { title: 'Matching', correct: 0, total: 0, questions: [] },
+                D: { title: 'MCQ Reasoning', correct: 0, total: 0, questions: [] }
+            };
+
+            questions.forEach((question, index) => {
+                const section = sectionResults[question.section];
+                section.total++;
+                
+                let userAnswer, correctAnswer, isCorrect;
+                
+                if (question.type === 'matching') {
+                    const userMatches = answers[index];
+                    if (userMatches && typeof userMatches === 'object') {
+                        const correctMatches = question.correctMatches;
+                        let allCorrect = true;
+                        
+                        // Check if all pairs are correctly matched
+                        if (Object.keys(userMatches).length === 5) {
+                            for (let leftItem in correctMatches) {
+                                if (userMatches[leftItem] !== correctMatches[leftItem]) {
+                                    allCorrect = false;
+                                    break;
+                                }
+                            }
+                        } else {
+                            allCorrect = false;
+                        }
+                        
+                        isCorrect = allCorrect;
+                        if (isCorrect) section.correct++;
+                        
+                        // Format user matches for display
+                        userAnswer = Object.keys(userMatches).length > 0 ? 
+                            Object.keys(userMatches).map(key => `${key} → ${userMatches[key]}`).join('; ') : 
+                            'Not answered';
+                        
+                        // Format correct matches for display
+                        correctAnswer = Object.keys(correctMatches).map(key => `${key} → ${correctMatches[key]}`).join('; ');
+                    } else {
+                        isCorrect = false;
+                        userAnswer = 'Not answered';
+                        correctAnswer = Object.keys(question.correctMatches).map(key => `${key} → ${question.correctMatches[key]}`).join('; ');
+                    }
+                } else {
+                    const userAnswerIndex = answers[index];
+                    isCorrect = userAnswerIndex === question.correct;
+                    if (isCorrect) section.correct++;
+                    
+                    userAnswer = userAnswerIndex !== undefined ? question.options[userAnswerIndex] : 'Not answered';
+                    correctAnswer = question.options[question.correct];
+                }
+                
+                section.questions.push({
+                    number: index + 1,
+                    question: question.question,
+                    userAnswer: userAnswer,
+                    correctAnswer: correctAnswer,
+                    isCorrect: isCorrect,
+                    flagged: flagged.has(index)
+                });
+            });
+
+            // Add section breakdown to PDF with beautiful design
+            Object.keys(sectionResults).forEach(sectionLetter => {
+                const section = sectionResults[sectionLetter];
+                const sectionPercentage = Math.round((section.correct / section.total) * 100);
+                
+                // Determine performance level
+                let performanceClass = 'needs-improvement';
+                let performanceText = 'Needs Improvement';
+                if (sectionPercentage >= 90) {
+                    performanceClass = 'excellent';
+                    performanceText = 'Excellent';
+                } else if (sectionPercentage >= 75) {
+                    performanceClass = 'good';
+                    performanceText = 'Good';
+                } else if (sectionPercentage >= 60) {
+                    performanceClass = 'average';
+                    performanceText = 'Average';
+                }
+                
+                pdfContent += `
+                    <div class="section-container">
+                        <div class="section-header">
+                            <div class="section-title">Section ${sectionLetter}: ${section.title}</div>
+                            <div class="section-score">
+                                ${section.correct}/${section.total} correct (${sectionPercentage}%)
+                                <span class="performance-indicator ${performanceClass}">${performanceText}</span>
+                            </div>
+                        </div>
+                        <div class="questions-container">
+                `;
+                
+                section.questions.forEach(q => {
+                    const questionClass = q.isCorrect ? 'question-correct' : 'question-incorrect';
+                    const statusIcon = q.isCorrect ? '✅' : '❌';
+                    const flagIcon = q.flagged ? '🚩' : '';
+                    
+                    pdfContent += `
+                        <div class="question-item ${questionClass}">
+                            <div class="question-header">
+                                <span class="question-number">Q${q.number}</span>
+                                <span class="status-icon">${statusIcon}</span>
+                                <span>${q.question}</span>
+                                ${flagIcon ? `<span class="flag-icon">${flagIcon}</span>` : ''}
+                            </div>
+                            <div class="question-text">${q.question}</div>
+                            <div class="answer-section">
+                                <div class="answer-row user-answer">
+                                    <strong>Your Answer:</strong> ${q.userAnswer}
+                                </div>
+                                <div class="answer-row correct-answer">
+                                    <strong>Correct Answer:</strong> ${q.correctAnswer}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                pdfContent += `
+                        </div>
+                    </div>
+                `;
+            });
+
+            pdfContent += `
+                        </div>
+                        
+                        <div class="footer-section">
+                            <div class="footer-title">Chemistry Assessment System</div>
+                            <div class="footer-content">
+                                Report generated on ${new Date().toLocaleString('en-US', {
+                                    weekday: 'long',
+                                    year: 'numeric',
+                                    month: 'long',
+                                    day: 'numeric',
+                                    hour: '2-digit',
+                                    minute: '2-digit'
+                                })}
+                                <br>
+                                Fill in Blanks • True/False • Matching • MCQ Reasoning • 40 Questions
+                            </div>
+                        </div>
+                    </div>
+                </body>
+                </html>
+            `;
+
+            // Create and download the PDF
+            const blob = new Blob([pdfContent], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `Chemistry_Assessment_Report_${studentName.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.html`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            // Show success message
+            setTimeout(() => {
+                alert('📄 Report downloaded successfully! The HTML file can be opened in any browser or converted to PDF using your browser\'s print function.');
+            }, 500);
+        }
+
+        function copyReportToClipboard() {
+            const percentage = document.getElementById('finalScore').textContent;
+            const correct = document.getElementById('correctCount').textContent;
+            const wrong = document.getElementById('wrongCount').textContent;
+            const marks = document.getElementById('totalMarks').textContent;
+            const time = document.getElementById('timeTaken').textContent;
+            
+            // Create text version for clipboard
+            let reportText = `CHEMISTRY ASSESSMENT REPORT
+========================================
+Student: ${studentName}${studentClass ? ` (${studentClass})` : ''}
+Final Score: ${percentage}
+Correct Answers: ${correct}
+Wrong Answers: ${wrong}
+Total Marks: ${marks}
+Time Taken: ${time}
+Date: ${new Date().toLocaleDateString()}
+
+SECTION BREAKDOWN:
+`;
+
+            // Add section results
+            const sectionResults = {
+                A: { title: 'Fill in the Blanks', correct: 0, total: 0 },
+                B: { title: 'True or False', correct: 0, total: 0 },
+                C: { title: 'Matching', correct: 0, total: 0 },
+                D: { title: 'MCQ Reasoning', correct: 0, total: 0 }
+            };
+
+            questions.forEach((question, index) => {
+                const section = sectionResults[question.section];
+                section.total++;
+                if (answers[index] === question.correct) section.correct++;
+            });
+
+            Object.keys(sectionResults).forEach(sectionLetter => {
+                const section = sectionResults[sectionLetter];
+                const percentage = Math.round((section.correct / section.total) * 100);
+                reportText += `Section ${sectionLetter} (${section.title}): ${section.correct}/${section.total} (${percentage}%)\n`;
+            });
+
+            reportText += `\nGenerated on: ${new Date().toLocaleString()}`;
+
+            // Copy to clipboard
+            navigator.clipboard.writeText(reportText).then(() => {
+                alert('📋 Report copied to clipboard! You can now paste it anywhere.');
+            }).catch(() => {
+                // Fallback for older browsers
+                const textArea = document.createElement('textarea');
+                textArea.value = reportText;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                alert('📋 Report copied to clipboard! You can now paste it anywhere.');
+            });
+        }
+
+        // Question Map Functions
+        function openQuestionMap() {
+            document.getElementById('questionMapOverlay').classList.add('active');
+            generateQuestionMap();
+        }
+
+        function closeQuestionMap() {
+            document.getElementById('questionMapOverlay').classList.remove('active');
+        }
+
+        function generateQuestionMap() {
+            const sectionsGrid = document.getElementById('sectionsGrid');
+            sectionsGrid.innerHTML = '';
+
+            // Group questions by section
+            const sectionGroups = {
+                A: { title: 'Section A: Fill in the Blanks', questions: [] },
+                B: { title: 'Section B: True or False', questions: [] },
+                C: { title: 'Section C: Matching', questions: [] },
+                D: { title: 'Section D: MCQ Reasoning', questions: [] }
+            };
+
+            questions.forEach((question, index) => {
+                sectionGroups[question.section].questions.push({
+                    index: index,
+                    question: question
+                });
+            });
+
+            // Create section containers
+            Object.keys(sectionGroups).forEach(sectionLetter => {
+                const section = sectionGroups[sectionLetter];
+                if (section.questions.length === 0) return;
+
+                const sectionContainer = document.createElement('div');
+                sectionContainer.className = 'section-container';
+
+                const answeredCount = section.questions.filter(q => 
+                    answers.hasOwnProperty(q.index)).length;
+
+                sectionContainer.innerHTML = `
+                    <div class="section-header">
+                        <h4 class="section-title">${section.title}</h4>
+                        <span class="section-progress">${answeredCount}/${section.questions.length} answered</span>
+                    </div>
+                    <div class="questions-grid" id="section-${sectionLetter}-grid">
+                    </div>
+                `;
+
+                const questionsGrid = sectionContainer.querySelector(`#section-${sectionLetter}-grid`);
+                
+                section.questions.forEach(questionData => {
+                    const questionDot = document.createElement('div');
+                    questionDot.className = 'question-dot';
+                    questionDot.textContent = questionData.index + 1;
+                    
+                    // Determine status
+                    if (questionData.index === currentQuestion) {
+                        questionDot.classList.add('current');
+                    } else if (flagged.has(questionData.index)) {
+                        questionDot.classList.add('flagged');
+                    } else if (answers.hasOwnProperty(questionData.index)) {
+                        questionDot.classList.add('answered');
+                    } else {
+                        questionDot.classList.add('unanswered');
+                    }
+
+                    questionDot.onclick = () => {
+                        currentQuestion = questionData.index;
+                        displayQuestion();
+                        closeQuestionMap();
+                    };
+
+                    questionsGrid.appendChild(questionDot);
+                });
+
+                sectionsGrid.appendChild(sectionContainer);
+            });
+        }
+
+        function jumpToQuestion(questionIndex) {
+            currentQuestion = questionIndex;
+            displayQuestion();
+            closeQuestionMap();
+        }
+
+        // Keyboard shortcuts for better accessibility
+        document.addEventListener('keydown', function(e) {
+            if (document.getElementById('examScreen').classList.contains('active')) {
+                if (e.key === 'ArrowLeft') previousQuestion();
+                if (e.key === 'ArrowRight') nextQuestion();
+                if (e.key >= '1' && e.key <= '4') {
+                    const index = parseInt(e.key) - 1;
+                    if (index < questions[currentQuestion].options.length) {
+                        selectOption(index);
+                    }
+                }
+                if (e.key.toLowerCase() === 'f') flagQuestion();
+                if (e.key.toLowerCase() === 'm') openQuestionMap();
+            }
+            
+            if (document.getElementById('questionMapOverlay').classList.contains('active')) {
+                if (e.key === 'Escape') closeQuestionMap();
+            }
+        });
+
+        // Close map when clicking outside
+        document.getElementById('questionMapOverlay').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeQuestionMap();
+            }
+        });
+    </script>
+
+    <!-- Google Sheets Setup Instructions (Hidden) -->
+    <div id="setupInstructions" style="display: none;">
+        <h2>🔧 Google Sheets Integration Setup</h2>
+        <p>To connect this exam to Google Sheets for automatic logging:</p>
+        
+        <h3>Step 1: Create Google Apps Script</h3>
+        <ol>
+            <li>Go to <a href="https://script.google.com" target="_blank">script.google.com</a></li>
+            <li>Click "New Project"</li>
+            <li>Replace the default code with the provided Google Apps Script code</li>
+            <li>Save the project with a name like "Chemistry Exam Logger"</li>
+        </ol>
+        
+        <h3>Step 2: Deploy as Web App</h3>
+        <ol>
+            <li>Click "Deploy" → "New deployment"</li>
+            <li>Choose type: "Web app"</li>
+            <li>Execute as: "Me"</li>
+            <li>Who has access: "Anyone"</li>
+            <li>Click "Deploy" and copy the Web App URL</li>
+        </ol>
+        
+        <h3>Step 3: Update Configuration</h3>
+        <ol>
+            <li>Replace 'YOUR_SCRIPT_ID' in the GOOGLE_SHEETS_CONFIG with your Web App URL</li>
+            <li>The script will automatically create sheets for logging</li>
+        </ol>
+        
+        <h3>Google Apps Script Code:</h3>
+        <pre style="background: #f5f5f5; padding: 15px; border-radius: 8px; overflow-x: auto;">
+function doPost(e) {
+  try {
+    const data = JSON.parse(e.postData.contents);
+    
+    // Get or create the main spreadsheet
+    let spreadsheet = getOrCreateSpreadsheet('Chemistry Mastery Logs');
+    
+    if (data.action === 'start') {
+      logExamStart(spreadsheet, data);
+    } else if (data.action === 'answer') {
+      logQuestionAnswer(spreadsheet, data);
+    } else if (data.action === 'complete') {
+      logExamCompletion(spreadsheet, data);
+    }
+    
+    return ContentService
+      .createTextOutput(JSON.stringify({success: true}))
+      .setMimeType(ContentService.MimeType.JSON);
+      
+  } catch (error) {
+    console.error('Error:', error);
+    return ContentService
+      .createTextOutput(JSON.stringify({success: false, error: error.toString()}))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+function getOrCreateSpreadsheet(name) {
+  const files = DriveApp.getFilesByName(name);
+  
+  if (files.hasNext()) {
+    const file = files.next();
+    return SpreadsheetApp.openById(file.getId());
+  } else {
+    const spreadsheet = SpreadsheetApp.create(name);
+    setupSheets(spreadsheet);
+    return spreadsheet;
+  }
+}
+
+function setupSheets(spreadsheet) {
+  // Create Summary Sheet
+  const summarySheet = spreadsheet.getActiveSheet();
+  summarySheet.setName('Summary');
+  summarySheet.getRange('A1:L1').setValues([[
+    'Exam ID', 'Student Name', 'Class', 'Final Score (%)', 
+    'Correct', 'Wrong', 'Total Marks', 'Max Marks', 
+    'Time Taken', 'Start Time', 'Completion Time', 'Status'
+  ]]);
+  
+  // Create Detailed Logs Sheet
+  const detailSheet = spreadsheet.insertSheet('Detailed_Logs');
+  detailSheet.getRange('A1:M1').setValues([[
+    'Exam ID', 'Student Name', 'Action', 'Question #', 
+    'Question Type', 'Question Text', 'User Answer', 
+    'Correct Answer', 'Is Correct', 'Time Spent (ms)', 
+    'Flagged', 'Timestamp', 'Additional Data'
+  ]]);
+  
+  // Create Analytics Sheet
+  const analyticsSheet = spreadsheet.insertSheet('Analytics');
+  analyticsSheet.getRange('A1:F1').setValues([[
+    'Date', 'Total Attempts', 'Average Score', 
+    'Highest Score', 'Lowest Score', 'Completion Rate'
+  ]]);
+  
+  // Format headers
+  [summarySheet, detailSheet, analyticsSheet].forEach(sheet => {
+    sheet.getRange(1, 1, 1, sheet.getLastColumn()).setFontWeight('bold');
+    sheet.getRange(1, 1, 1, sheet.getLastColumn()).setBackground('#4285f4');
+    sheet.getRange(1, 1, 1, sheet.getLastColumn()).setFontColor('white');
+  });
+}
+
+function logExamStart(spreadsheet, data) {
+  const summarySheet = spreadsheet.getSheetByName('Summary');
+  const detailSheet = spreadsheet.getSheetByName('Detailed_Logs');
+  
+  // Add to summary sheet
+  summarySheet.appendRow([
+    data.examId,
+    data.studentName,
+    data.studentClass || '',
+    '', // Final score - will be updated on completion
+    '', // Correct answers
+    '', // Wrong answers  
+    '', // Total marks
+    '', // Max marks
+    '', // Time taken
+    data.startTime,
+    '', // Completion time
+    'In Progress'
+  ]);
+  
+  // Add to detailed logs
+  detailSheet.appendRow([
+    data.examId,
+    data.studentName,
+    'START',
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+    data.startTime,
+    JSON.stringify({
+      totalQuestions: data.totalQuestions,
+      userAgent: data.userAgent
+    })
+  ]);
+}
+
+function logQuestionAnswer(spreadsheet, data) {
+  const detailSheet = spreadsheet.getSheetByName('Detailed_Logs');
+  
+  detailSheet.appendRow([
+    data.examId,
+    data.studentName,
+    'ANSWER',
+    data.questionNumber,
+    data.questionType,
+    data.questionText,
+    data.userAnswer,
+    data.correctAnswer,
+    data.isCorrect,
+    data.timeSpent,
+    data.flagged,
+    data.timestamp,
+    ''
+  ]);
+}
+
+function logExamCompletion(spreadsheet, data) {
+  const summarySheet = spreadsheet.getSheetByName('Summary');
+  const detailSheet = spreadsheet.getSheetByName('Detailed_Logs');
+  
+  // Update summary sheet
+  const summaryData = summarySheet.getDataRange().getValues();
+  for (let i = 1; i < summaryData.length; i++) {
+    if (summaryData[i][0] === data.examId) {
+      summarySheet.getRange(i + 1, 4, 1, 9).setValues([[
+        data.finalScore,
+        data.correctAnswers,
+        data.wrongAnswers,
+        data.totalMarks,
+        data.maxMarks,
+        data.timeTaken,
+        data.completionTime,
+        'Completed'
+      ]]);
+      break;
+    }
+  }
+  
+  // Add completion log to detailed sheet
+  detailSheet.appendRow([
+    data.examId,
+    data.studentName,
+    'COMPLETE',
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+    data.flaggedQuestions,
+    data.completionTime,
+    data.sectionBreakdown
+  ]);
+  
+  // Update analytics
+  updateAnalytics(spreadsheet);
+}
+
+function updateAnalytics(spreadsheet) {
+  const summarySheet = spreadsheet.getSheetByName('Summary');
+  const analyticsSheet = spreadsheet.getSheetByName('Analytics');
+  
+  const today = new Date().toDateString();
+  const summaryData = summarySheet.getDataRange().getValues();
+  
+  // Filter completed exams for today
+  const todayExams = summaryData.filter(row => 
+    row[11] === 'Completed' && 
+    new Date(row[10]).toDateString() === today
+  );
+  
+  if (todayExams.length > 0) {
+    const scores = todayExams.map(row => parseFloat(row[3]));
+    const avgScore = scores.reduce((a, b) => a + b, 0) / scores.length;
+    const highScore = Math.max(...scores);
+    const lowScore = Math.min(...scores);
+    
+    // Check if today's data already exists
+    const analyticsData = analyticsSheet.getDataRange().getValues();
+    let todayRowIndex = -1;
+    
+    for (let i = 1; i < analyticsData.length; i++) {
+      if (analyticsData[i][0] === today) {
+        todayRowIndex = i + 1;
+        break;
+      }
+    }
+    
+    const newRow = [today, todayExams.length, avgScore.toFixed(2), highScore, lowScore, '100%'];
+    
+    if (todayRowIndex > 0) {
+      analyticsSheet.getRange(todayRowIndex, 1, 1, 6).setValues([newRow]);
+    } else {
+      analyticsSheet.appendRow(newRow);
+    }
+  }
+}
+
+function doGet(e) {
+  return ContentService
+    .createTextOutput('Chemistry Exam Logger is running!')
+    .setMimeType(ContentService.MimeType.TEXT);
+}
+        </pre>
+    </div>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9753332120cb3df7',t:'MTc1NjIwOTk1MS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
